@@ -1,0 +1,48 @@
+
+#define F_CPU 8000000UL
+
+#include <avr/io.h>
+#include <util/delay.h>
+#include <avr/interrupt.h>
+
+ISR(INT0_vect)
+{
+ int x=0; 
+ 	
+ for (x=0; x<4; x++)
+ { 	 
+	PORTD &=~(1<<PD0); 
+	_delay_ms(50); 
+   PORTD |=(1<<PD0);
+   _delay_ms(50);
+ }
+ PORTD &=~(1<<PD0); 
+ 
+}
+
+int main(void)
+{
+    // pin INT0 is input 
+	DDRD &=~(1<<PD2); 
+	// pin dx is output 
+   DDRD |=1<<PD0; 
+    PORTD |=(1<<PD0); //enable pull up resistor 
+	
+	//RED LED	
+   DDRD |=(1<<PD3); 
+   PORTD &=~(1<<PD3); 
+   
+  
+	// enable int0 interrupt
+	 GICR |=(1<<INT0); 
+	// enable global interrupt
+	sei(); 
+	
+    while (1) 
+    {
+	   PORTD ^=(1<<PD3); 
+	   _delay_ms(300);
+    }
+}
+
+
